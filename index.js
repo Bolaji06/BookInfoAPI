@@ -3,9 +3,13 @@ import express from "express";
 import fs from "fs";
 //import file from '../BookInfoAPI/export.json'
 
+import prisma from "./lib/prisma.js";
+
+import book from './routes/book.js'
+
 const app = express();
 
-const prisma = new PrismaClient();
+app.use('/api/books', book);
 
 async function loadData() {
   try {
@@ -22,6 +26,7 @@ async function loadData() {
   } catch (err) {
     console.log(err);
   }
+  console.log('Syncing data...')
 }
 //loadData();
 

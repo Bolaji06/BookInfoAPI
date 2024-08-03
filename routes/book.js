@@ -1,7 +1,10 @@
 
 import express from "express";
+import { getAllBooks } from "../controller/book.controller.js";
 
 
 const router = express.Router();
 
-router.use('/books', getAllBooks);
+router.get('/', getAllBooks);
+
+export default router;
