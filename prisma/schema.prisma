@@ -28,3 +28,8 @@ model Book {
   num_pages           String?
   ratings_count       String?
 }
+
+model Category {
+  id                  String @id @default(auto()) @map("_id") @db.ObjectId
+  category            String @unique
+}
