@@ -5,11 +5,13 @@ import fs from "fs";
 
 import prisma from "./lib/prisma.js";
 
-import book from './routes/book.js'
+import book from "./routes/book.js";
+import category from "./routes/category.js"
 
 const app = express();
 
-app.use('/api/books', book);
+app.use("/api/books", book);
+app.use("/api/categories", category)
 
 async function loadData() {
   try {
@@ -18,17 +20,33 @@ async function loadData() {
     );
 
     for (let item of data) {
-      await prisma.book.create({
-        data: item,
-      });
+      // Ensure item.categories is an array
+      if (Array.isArray(item.categories)) {
+        for (let category of item.categories) {
+          const ignoreCasing = category.toLowerCase();
+          await prisma.category.upsert({
+            where: { category: category },
+            update: {},
+            create: { category: category },
+          });
+        }
+      } else if (typeof item.categories === "string") {
+        //const ignoreCasing = item.categories.toLowerCase();
+        await prisma.category.upsert({
+          where: { category: item.categories },
+          update: {},
+          create: { category: item.categories },
+        });
+      }
     }
     console.log("Data loaded successfully");
   } catch (err) {
     console.log(err);
   }
-  console.log('Syncing data...')
+  console.log("Syncing data...");
 }
-//loadData();
+
+//loadData()
 
 app.listen(3000, () => {
   console.log("Server starting at 3000");

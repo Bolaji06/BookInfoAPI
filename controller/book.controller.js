@@ -6,7 +6,14 @@ import prisma from "../lib/prisma.js";
  * @description get all books information
  */
 export async function getAllBooks(req, res) {
-  let { page_count, limit } = req.query;
+  let { page_count, limit, title, author, category } = req.query;
+
+  // check if provided query is valid
+  if (limit || page_count) {
+    if (isNaN(parseInt(limit)) || isNaN(parseInt(page_count))) {
+      return res.status(400).json({ success: false, message: "bad request" });
+    }
+  }
 
   if (limit > 20) {
     return res.status(401).json({
@@ -27,12 +34,53 @@ export async function getAllBooks(req, res) {
   }
   const skip = (page_count - 1) * limit;
 
-  // check if provided query is valid
-  if (isNaN(parseInt(limit)) || isNaN(parseInt(page_count))) {
-    return res.status(400).json({ success: false, message: "bad request" });
-  }
-
   try {
+    // search by title
+    if (title) {
+      const searchByTitle = await prisma.book.findMany({
+        where: {
+          title: {
+            contains: title.trim(),
+            mode: "insensitive",
+          },
+        },
+        take: parseInt(limit),
+        skip,
+      });
+      return res.status(200).json({ success: true, message: searchByTitle });
+    }
+
+    // search by author name
+    if (author) {
+      const searchByAuthor = await prisma.book.findMany({
+        where: {
+          authors: {
+            contains: author.trim(),
+            mode: "insensitive",
+          },
+        },
+        take: parseInt(limit),
+        skip,
+      });
+      return res.status(200).json({ success: true, message: searchByAuthor });
+    }
+
+    // search by category
+    if (category) {
+      const books = await prisma.book.findMany({
+        where: {
+          categories: {
+            contains: category.trim(),
+            mode: "insensitive",
+          },
+        },
+        take: parseInt(limit),
+        skip,
+      });
+      return res.status(200).json({ success: true, message: books });
+    }
+
+    // search all books
     const books = await prisma.book.findMany({
       take: parseInt(limit),
       skip: skip,
