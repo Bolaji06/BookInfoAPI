@@ -3,7 +3,7 @@ import prisma from "../lib/prisma.js";
 /**
  *
  * @param {import("express").Request} req
- * @param {*} res
+ * @param {import("express").Response} res
  */
 export async function categories(req, res) {
   let { page_count, limit } = req.query;
