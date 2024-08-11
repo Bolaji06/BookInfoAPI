@@ -86,7 +86,7 @@ export async function getAllBooks(req, res) {
       skip: skip,
     });
 
-    return res.status(201).json({ success: true, message: books });
+    return res.status(200).json({ success: true, message: books });
   } catch (err) {
     console.log(err);
     return res
