@@ -6,12 +6,12 @@ import fs from "fs";
 import prisma from "./lib/prisma.js";
 
 import book from "./routes/book.js";
-import category from "./routes/category.js"
+import category from "./routes/category.js";
 
 const app = express();
 
 app.use("/api/books", book);
-app.use("/api/categories", category)
+app.use("/api/categories", category);
 
 async function loadData() {
   try {

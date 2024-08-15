@@ -88,9 +88,33 @@ export async function getAllBooks(req, res) {
 
     return res.status(200).json({ success: true, message: books });
   } catch (err) {
-    console.log(err);
     return res
       .status(500)
       .json({ success: false, message: "internal server error" });
   }
+}
+
+/**
+ * 
+ * @param {import("express").Request} req 
+ * @param {import("express").Response} res 
+ */
+export async function getBook(req, res){
+  const { id } = req.params;
+
+  try {
+    const data = await prisma.book.findUnique({
+      where: {
+        id
+      }
+    })
+    if (!data){
+      return res.status(404).json({ success: false, message: "can't find book record" });
+    }
+    return res.status(200).json({ success: true, message: data });
+
+  }catch(err){
+    return res.status(500).json({ success: false, message: 'internal server error' });
+  }
+
 }

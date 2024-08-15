@@ -50,9 +50,9 @@ export async function categories(req, res) {
             return item.category
         }
        })
-       return res.status(200).json({ success: true, message: list }); 
+       return res.status(200).json({ success: true, categories: list }); 
     }
-    return res.status(200).json({ success: true, message: categories });
+    //return res.status(200).json({ success: true, categories });
     
   } catch (err) {
     console.log(err);
